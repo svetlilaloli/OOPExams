@@ -12,10 +12,10 @@ namespace EasterRaces.Models.Cars.Entities
         public Car(string model, int horsePower, double cubicCentimeters, int minHorsePower, int maxHorsePower)
         {
             Model = model;
-            HorsePower = horsePower;
             CubicCentimeters = cubicCentimeters;
             this.minHorsePower = minHorsePower;
             this.maxHorsePower = maxHorsePower;
+            HorsePower = horsePower;
         }
         public string Model 
         {
@@ -27,7 +27,7 @@ namespace EasterRaces.Models.Cars.Entities
             {
                 if (string.IsNullOrWhiteSpace(value) || value.Length < 4)
                 {
-                    throw new ArgumentException($"Model {model} cannot be less than 4 symbols.");
+                    throw new ArgumentException($"Model {value} cannot be less than 4 symbols.");
                 }
                 model = value;
             }
@@ -43,7 +43,7 @@ namespace EasterRaces.Models.Cars.Entities
             {
                 if (value < minHorsePower || value > maxHorsePower)
                 {
-                    throw new ArgumentException($"Invalid horse power: {horsePower}.");
+                    throw new ArgumentException($"Invalid horse power: {value}.");
                 }
                 horsePower = value;
             }

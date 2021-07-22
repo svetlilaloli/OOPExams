@@ -27,7 +27,7 @@ namespace EasterRaces.Models.Races.Entities
             {
                 if (string.IsNullOrEmpty(value) || value.Length < 5)
                 {
-                    throw new ArgumentException($"Name {name} cannot be less than 5 symbols.");
+                    throw new ArgumentException($"Name {value} cannot be less than 5 symbols.");
                 }
                 name = value;
             }
