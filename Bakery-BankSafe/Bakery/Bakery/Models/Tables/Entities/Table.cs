@@ -65,13 +65,13 @@ namespace Bakery.Models.Tables.Entities
         {
             foodOrders.Clear();
             drinkOrders.Clear();
-            NumberOfPeople = 0;
+            numberOfPeople = 0;
             IsReserved = false;
         }
 
         public decimal GetBill()
         {
-            decimal result = 0;
+            decimal result = PricePerPerson * NumberOfPeople;
             foreach (var food in foodOrders)
             {
                 result += food.Price;
@@ -85,7 +85,7 @@ namespace Bakery.Models.Tables.Entities
 
         public string GetFreeTableInfo()
         {
-            return $"Table: {TableNumber}\nType: {GetType().Name}\nCapacity: {Capacity}\nPrice per Person: {PricePerPerson}";
+            return $"Table: {TableNumber}\nType: {GetType().Name}\nCapacity: {Capacity}\nPrice per Person: {PricePerPerson:f2}";
         }
 
         public void OrderDrink(IDrink drink)
