@@ -5,6 +5,7 @@ using Bakery.Models.Drinks.Contracts;
 using Bakery.Models.Drinks.Entities;
 using Bakery.Models.Tables.Contracts;
 using Bakery.Models.Tables.Entities;
+using Bakery.Utilities.Enums;
 using Bakery.Utilities.Messages;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Bakery.Core
         {
             IDrink drink;
 
-            if (type == "Water")
+            if (type == DrinkType.Water.ToString())
             {
                 drink = new Water(name, portion, brand);
             }
@@ -44,7 +45,7 @@ namespace Bakery.Core
         public string AddFood(string type, string name, decimal price)
         {
             IBakedFood food;
-            if (type == "Bread")
+            if (type == BakedFoodType.Bread.ToString())
             {
                 food = new Bread(name, price);
             }
@@ -59,7 +60,7 @@ namespace Bakery.Core
         public string AddTable(string type, int tableNumber, int capacity)
         {
             ITable table;
-            if (type == "InsideTable")
+            if (type == TableType.InsideTable.ToString())
             {
                 table = new InsideTable(tableNumber, capacity);
             }
