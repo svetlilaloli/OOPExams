@@ -1,4 +1,5 @@
 ﻿using AquaShop.Models.Fish.Contracts;
+using AquaShop.Utilities.Messages;
 using System;
 
 namespace AquaShop.Models.Fish
@@ -21,7 +22,7 @@ namespace AquaShop.Models.Fish
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Fish name cannot be null or empty.");
+                    throw new ArgumentException(ExceptionMessages.InvalidFishName);
                 }
                 name = value;
             }
@@ -34,7 +35,7 @@ namespace AquaShop.Models.Fish
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Fish species cannot be null or empty.");
+                    throw new ArgumentException(ExceptionMessages.InvalidFishSpecies);
                 }
                 species = value;
             }
@@ -48,7 +49,7 @@ namespace AquaShop.Models.Fish
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException("Fish price cannot be below or equal to 0.");
+                    throw new ArgumentException(ExceptionMessages.InvalidFishPrice);
                 }
                 price = value;
             }

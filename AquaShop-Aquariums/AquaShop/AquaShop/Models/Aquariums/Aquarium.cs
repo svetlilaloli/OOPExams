@@ -1,6 +1,7 @@
 ﻿using AquaShop.Models.Aquariums.Contracts;
 using AquaShop.Models.Decorations.Contracts;
 using AquaShop.Models.Fish.Contracts;
+using AquaShop.Utilities.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace AquaShop.Models.Aquariums
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Aquarium name cannot be null or empty.");
+                    throw new ArgumentException(ExceptionMessages.InvalidAquariumName);
                 }
                 name = value;
             }
@@ -50,7 +51,7 @@ namespace AquaShop.Models.Aquariums
         {
             if (this.fish.Count >= Capacity)
             {
-                throw new InvalidOperationException("Not enough capacity.");
+                throw new InvalidOperationException(ExceptionMessages.NotEnoughCapacity);
             }
             this.fish.Add(fish);
         }
