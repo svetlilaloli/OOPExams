@@ -8,10 +8,9 @@ namespace Easter.Models.Bunnies
         public SleepyBunny(string name) : base(name, energy)
         {
         }
-        public new void Work()
+        public override void Work()
         {
-            base.Work();
-            Energy -= 5;
+            Energy -= 15;
         }
     }
 }

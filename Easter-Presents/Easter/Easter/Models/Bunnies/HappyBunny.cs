@@ -8,5 +8,9 @@ namespace Easter.Models.Bunnies
         public HappyBunny(string name) : base(name, energy)
         {
         }
+        public override void Work()
+        {
+            Energy -= 10;
+        }
     }
 }

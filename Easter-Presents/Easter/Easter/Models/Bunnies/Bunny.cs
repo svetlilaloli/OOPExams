@@ -3,7 +3,6 @@ using Easter.Models.Dyes.Contracts;
 using Easter.Utilities.Messages;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Easter.Models.Bunnies
 {
@@ -50,9 +49,6 @@ namespace Easter.Models.Bunnies
             dyes.Add(dye);
         }
 
-        public virtual void Work()
-        {
-            Energy -= 10;
-        }
+        public abstract void Work();
     }
 }
