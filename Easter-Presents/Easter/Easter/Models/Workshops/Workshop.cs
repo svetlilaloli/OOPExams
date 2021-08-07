@@ -9,16 +9,23 @@ namespace Easter.Models.Workshops
     {
         public void Color(IEgg egg, IBunny bunny)
         {
-            while (bunny.Energy > 0 && bunny.Dyes.Count > 0)
+            while (bunny.Dyes.Count > 0)
             {
                 var dye = bunny.Dyes.FirstOrDefault();
-                bunny.Dyes.Remove(dye);
                 
                 while (!egg.IsDone() && dye.Power > 0 && bunny.Energy > 0)
                 {
                     bunny.Work();
                     dye.Use();
                     egg.GetColored();
+                }
+                if (dye.Power == 0)
+                {
+                    bunny.Dyes.Remove(dye);
+                }
+                if (egg.IsDone() || bunny.Energy == 0)
+                {
+                    break;
                 }
             }
         }

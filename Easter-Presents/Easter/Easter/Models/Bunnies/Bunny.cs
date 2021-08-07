@@ -42,7 +42,7 @@ namespace Easter.Models.Bunnies
             }
         }
 
-        public ICollection<IDye> Dyes => dyes.AsReadOnly();
+        public ICollection<IDye> Dyes => dyes;
 
         public void AddDye(IDye dye)
         {
