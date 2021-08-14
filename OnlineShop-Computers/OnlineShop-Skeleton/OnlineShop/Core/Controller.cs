@@ -1,4 +1,5 @@
-﻿using OnlineShop.Models.Products.Components;
+﻿using OnlineShop.Common.Constants;
+using OnlineShop.Models.Products.Components;
 using OnlineShop.Models.Products.Computers;
 using OnlineShop.Models.Products.Peripherals;
 using System;
@@ -20,66 +21,63 @@ namespace OnlineShop.Core
         }
         public string AddComponent(int computerId, int id, string componentType, string manufacturer, string model, decimal price, double overallPerformance, int generation)
         {
-            var existingComputer = computers.Find(x => x.Id == computerId);
-            if (existingComputer == null)
+            if (!computers.Exists(x => x.Id == computerId))
             {
-                throw new ArgumentException("Computer with this id does not exist.");
+                throw new ArgumentException(ExceptionMessages.NotExistingComputerId);
             }
-            var existingComponent = existingComputer.Components.ToList().Find(x => x.Id == id);
-            if (existingComponent != null)
+            if (components.Exists(x => x.Id == id))
             {
-                throw new ArgumentException("Component with this id already exists.");
+                throw new ArgumentException(ExceptionMessages.ExistingComponentId);
             }
             IComponent component = Factory.CreateComponent(id, componentType, manufacturer, model, price, overallPerformance, generation);
 
-            existingComputer.AddComponent(component);
+            var computer = computers.Find(x => x.Id == computerId);
+            computer.AddComponent(component);
             components.Add(component);
-            return $"Component {componentType} with id {component.Id} added successfully in computer with id {existingComputer.Id}.";
+            return string.Format(SuccessMessages.AddedComponent, componentType, component.Id, computer.Id);
         }
 
         public string AddComputer(string computerType, int id, string manufacturer, string model, decimal price)
         {
-            var existingComputer = computers.Find(x => x.Id == id);
-            if (existingComputer != null)
+            if (computers.Exists(x => x.Id == id))
             {
-                throw new ArgumentException("Computer with this id already exists.");
+                throw new ArgumentException(ExceptionMessages.ExistingComputerId);
             }
 
             IComputer computer = Factory.CreateComputer(id, computerType, manufacturer, model, price);
 
             computers.Add(computer);
-            return $"Computer with id {computer.Id} added successfully.";
+            return string.Format(SuccessMessages.AddedComputer, computer.Id);
         }
 
         public string AddPeripheral(int computerId, int id, string peripheralType, string manufacturer, string model, decimal price, double overallPerformance, string connectionType)
         {
-            var existingComputer = computers.Find(x => x.Id == computerId);
-            if (existingComputer == null)
+            if (!computers.Exists(x => x.Id == computerId))
             {
-                throw new ArgumentException("Computer with this id does not exist.");
+                throw new ArgumentException(ExceptionMessages.NotExistingComputerId);
             }
-            var existingPeripheral = existingComputer.Peripherals.ToList().Find(x => x.Id == id);
-            if (existingPeripheral != null)
+            if (peripherals.Exists(x => x.Id == id))
             {
-                throw new ArgumentException("Peripheral with this id already exists.");
+                throw new ArgumentException(ExceptionMessages.ExistingPeripheralId);
             }
             IPeripheral peripheral = Factory.CreatePeripheral(id, peripheralType, manufacturer, model, price, overallPerformance, connectionType);
 
-            existingComputer.AddPeripheral(peripheral);
+            var computer = computers.Find(x => x.Id == computerId);
+            computer.AddPeripheral(peripheral);
             peripherals.Add(peripheral);
-            return $"Peripheral {peripheralType} with id {peripheral.Id} added successfully in computer with id {existingComputer.Id}.";
+            return string.Format(SuccessMessages.AddedPeripheral, peripheralType, peripheral.Id, computer.Id);
         }
 
         public string BuyBest(decimal budget)
         {
             if (computers.Count == 0)
             {
-                throw new ArgumentException($"Can't buy a computer with a budget of ${budget}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.CanNotBuyComputer, budget));
             }
             var computersInTheBudget = computers.FindAll(x => x.Price <= budget);
             if (computersInTheBudget.Count == 0)
             {
-                throw new ArgumentException($"Can't buy a computer with a budget of ${budget}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.CanNotBuyComputer, budget));
             }
             var bestComputer = computersInTheBudget.Find(x => x.OverallPerformance == computersInTheBudget.Max(x => x.OverallPerformance));
             computers.Remove(bestComputer);
@@ -88,61 +86,60 @@ namespace OnlineShop.Core
 
         public string BuyComputer(int id)
         {
-            var findComputer = computers.Find(x => x.Id == id);
-            if (findComputer == null)
+            var foundComputer = computers.Find(x => x.Id == id);
+            if (foundComputer == null)
             {
-                throw new ArgumentException("Computer with this id does not exist.");
+                throw new ArgumentException(ExceptionMessages.NotExistingComputerId);
             }
-            computers.Remove(findComputer);
-            return findComputer.ToString();
+            computers.Remove(foundComputer);
+            return foundComputer.ToString();
         }
         public void Close()
         {
             Environment.Exit(0);
         }
-
         public string GetComputerData(int id)
         {
-            var findComputer = computers.Find(x => x.Id == id);
-            if (findComputer == null)
+            var foundComputer = computers.Find(x => x.Id == id);
+            if (foundComputer == null)
             {
-                throw new ArgumentException("Computer with this id does not exist.");
+                throw new ArgumentException(ExceptionMessages.NotExistingComputerId);
             }
-            return findComputer.ToString();
+            return foundComputer.ToString();
         }
 
         public string RemoveComponent(string componentType, int computerId)
         {
-            var findComputer = computers.Find(x => x.Id == computerId);
-            if (findComputer == null)
+            var foundComputer = computers.Find(x => x.Id == computerId);
+            if (foundComputer == null)
             {
-                throw new ArgumentException("Computer with this id does not exist.");
+                throw new ArgumentException(ExceptionMessages.NotExistingComputerId);
             }
-            var findComponent = findComputer.Components.ToList().Find(x => x.GetType().Name == componentType);
-            if (findComponent == null)
+            var foundComponent = foundComputer.Components.ToList().Find(x => x.GetType().Name == componentType);
+            if (foundComponent == null)
             {
-                throw new ArgumentException($"{componentType} does not exist in computer with id {findComputer.Id}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.NotExistingComponent, componentType, foundComputer.Id));
             }
-            findComputer.RemoveComponent(componentType);
-            components.Remove(findComponent);
-            return $"Successfully removed {componentType} with id {findComponent.Id}.";
+            foundComputer.RemoveComponent(componentType);
+            components.Remove(foundComponent);
+            return string.Format(SuccessMessages.RemovedComponent, componentType, foundComponent.Id);
         }
 
         public string RemovePeripheral(string peripheralType, int computerId)
         {
-            var findComputer = computers.Find(x => x.Id == computerId);
-            if (findComputer == null)
+            var foundComputer = computers.Find(x => x.Id == computerId);
+            if (foundComputer == null)
             {
-                throw new ArgumentException("Computer with this id does not exist.");
+                throw new ArgumentException(ExceptionMessages.NotExistingComputerId);
             }
-            var findPeripheral = findComputer.Peripherals.ToList().Find(x => x.GetType().Name == peripheralType);
-            if (findPeripheral == null)
+            var foundPeripheral = foundComputer.Peripherals.ToList().Find(x => x.GetType().Name == peripheralType);
+            if (foundPeripheral == null)
             {
-                throw new ArgumentException($"{peripheralType} does not exist in computer with id {findComputer.Id}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.NotExistingPeripheral, peripheralType, foundComputer.Id));
             }
-            findComputer.RemovePeripheral(peripheralType);
-            peripherals.Remove(findPeripheral);
-            return $"Successfully removed {peripheralType} with id {findPeripheral.Id}.";
+            foundComputer.RemovePeripheral(peripheralType);
+            peripherals.Remove(foundPeripheral);
+            return string.Format(SuccessMessages.RemovedPeripheral, peripheralType, foundPeripheral.Id);
         }
     }
 }
