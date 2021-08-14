@@ -21,6 +21,11 @@ namespace Computers.Tests
         [Test]
         public void Constructor_InitiatesAList()
         {
+            Assert.IsNotNull(manager.Computers);
+        }
+        [Test]
+        public void Computers_WhenManagerIsEmpty_ShouldReturnZero()
+        {
             Assert.IsTrue(manager.Computers.Count == 0);
         }
         [Test]
@@ -29,7 +34,13 @@ namespace Computers.Tests
             Assert.IsTrue(manager.Count == 0);
         }
         [Test]
-        public void AddComputer_ValidParameter_ShouldBeAddToTheList()
+        public void AddComputer_NullComputerParameter_ShouldThrowArgumentNullException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(() => manager.AddComputer(null));
+            StringAssert.Contains("Can not be null!", ex.Message);
+        }
+        [Test]
+        public void AddComputer_ValidComputerParameter_ShouldBeAddedToTheList()
         {
             manager.AddComputer(computer);
             Assert.IsTrue(manager.Count == 1);
@@ -40,6 +51,12 @@ namespace Computers.Tests
             manager.AddComputer(computer);
             var ex = Assert.Throws<ArgumentException>(() => manager.AddComputer(computer));
             StringAssert.Contains("This computer already exists.", ex.Message);
+        }
+        [Test]
+        public void RemoveComputer_NotExistingComputerInTheManager_ShouldThrowArgumentException()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => manager.RemoveComputer(manufacturer, model));
+            StringAssert.Contains("There is no computer with this manufacturer and model.", ex.Message);
         }
         [Test]
         public void RemoveComputer_ExistingComputerFromTheManager_ShouldRemoveItFromTheList()
@@ -59,6 +76,13 @@ namespace Computers.Tests
             var actual = manager.RemoveComputer(manufacturer, model);
             Assert.AreEqual(expected, actual);
         }
+        [TestCase(null, model)]
+        [TestCase(manufacturer, null)]
+        public void GetComputer_NullParameter_ShouldThrowArgumentNullException(string manufacturer, string model)
+        {
+            var ex = Assert.Throws<ArgumentNullException>(() => manager.GetComputer(manufacturer, model));
+            StringAssert.Contains("Can not be null!", ex.Message);
+        }
         [Test]
         public void GetComputer_ExistingComputerFromTheManager_ShouldReturnTheComputer()
         {
@@ -73,6 +97,12 @@ namespace Computers.Tests
         {
             var ex = Assert.Throws<ArgumentException>(() => manager.GetComputer(manufacturer, model));
             StringAssert.Contains("There is no computer with this manufacturer and model.", ex.Message);
+        }
+        [Test]
+        public void GetComputersByManufacturer_NullManufacturerParameter_ShouldThrowArgumentNullException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(() => manager.GetComputersByManufacturer(null));
+            StringAssert.Contains("Can not be null!", ex.Message);
         }
         [Test]
         public void GetComputersByManufacturer_WithExistingManufacturer_ShouldReturnCollectionOfMatchingComputers()
