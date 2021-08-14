@@ -1,5 +1,5 @@
-﻿using System;
-using System.Reflection;
+﻿using OnlineShop.Common.Constants;
+using System;
 
 namespace OnlineShop.Models.Products
 {
@@ -20,30 +20,24 @@ namespace OnlineShop.Models.Products
         }
         public int Id
         {
-            get
-            {
-                return id;
-            }
-            set
+            get => id;
+            private set
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException("Id can not be less or equal than 0.");
+                    throw new ArgumentException(ExceptionMessages.InvalidProductId);
                 }
                 id = value;
             }
         }
         public string Manufacturer
         {
-            get
-            {
-                return manufacturer;
-            }
-            set
+            get => manufacturer;
+            private set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Manufacturer can not be empty.");
+                    throw new ArgumentException(ExceptionMessages.InvalidManufacturer);
                 }
                 manufacturer = value;
             }
@@ -51,31 +45,25 @@ namespace OnlineShop.Models.Products
 
         public string Model
         {
-            get
-            {
-                return model;
-            }
-            set
+            get => model;
+            private set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Model can not be empty.");
+                    throw new ArgumentException(ExceptionMessages.InvalidModel);
                 }
                 model = value;
             }
         }
 
-        public decimal Price
+        public virtual decimal Price
         {
-            get
-            {
-                return price;
-            }
-            set
+            get => price;
+            private set
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException("Price can not be less or equal than 0.");
+                    throw new ArgumentException(ExceptionMessages.InvalidPrice);
                 }
                 price = value;
             }
@@ -83,15 +71,12 @@ namespace OnlineShop.Models.Products
 
         public double OverallPerformance
         {
-            get
-            {
-                return overallPerformance;
-            }
-            set
+            get => overallPerformance;
+            private set
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentException("Overall Performance can not be less or equal than 0.");
+                    throw new ArgumentException(ExceptionMessages.InvalidOverallPerformance);
                 }
                 overallPerformance = value;
             }

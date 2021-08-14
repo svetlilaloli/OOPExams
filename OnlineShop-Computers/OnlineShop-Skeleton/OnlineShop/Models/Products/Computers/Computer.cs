@@ -1,4 +1,5 @@
-﻿using OnlineShop.Models.Products.Components;
+﻿using OnlineShop.Common.Constants;
+using OnlineShop.Models.Products.Components;
 using OnlineShop.Models.Products.Peripherals;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace OnlineShop.Models.Products.Computers
 {
-    public abstract class Computer : Product
+    public abstract class Computer : Product, IComputer
     {
         private readonly List<IComponent> components;
         private readonly List<IPeripheral> peripherals;
@@ -34,34 +35,24 @@ namespace OnlineShop.Models.Products.Computers
                 return base.OverallPerformance;
             }
         }
-        public new decimal Price
+        public override decimal Price
         {
             get
             {
                 decimal totalPrice = base.Price;
                 if (components.Count > 0)
                 {
-                    decimal totalComponentsPrice = 0;
-                    foreach (var component in components)
-                    {
-                        totalComponentsPrice += component.Price;
-                    }
-                    totalPrice += totalComponentsPrice;
+                    totalPrice += components.Sum(x => x.Price);
                 }
                 if (peripherals.Count > 0)
                 {
-                    decimal totalPeripheralsPrice = 0;
-                    foreach (var peripheral in peripherals)
-                    {
-                        totalPeripheralsPrice += peripheral.Price;
-                    }
-                    totalPrice += totalPeripheralsPrice;
+                    totalPrice += peripherals.Sum(x => x.Price);
                 }
                 return totalPrice;
             }
         }
         public IReadOnlyCollection<IComponent> Components => components.AsReadOnly();
-        public IReadOnlyCollection<IPeripheral> Peripherals => peripherals.AsReadOnly(); 
+        public IReadOnlyCollection<IPeripheral> Peripherals => peripherals.AsReadOnly();
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
@@ -81,9 +72,9 @@ namespace OnlineShop.Models.Products.Computers
         }
         public void AddComponent(IComponent component)
         {
-            if (components.Contains(component))
+            if (components.Exists(x => x.GetType().Name == component.GetType().Name))
             {
-                throw new ArgumentException($"Component {component.GetType().Name} already exists in {this.GetType().Name} with Id {this.Id}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.ExistingComponent, component.GetType().Name, this.GetType().Name, this.Id));
             }
             components.Add(component);
         }
@@ -92,16 +83,16 @@ namespace OnlineShop.Models.Products.Computers
             var component = components.Find(x => x.GetType().Name == componentType);
             if (component == null)
             {
-                throw new ArgumentException($"Component {componentType} does not exist in {this.GetType().Name} with Id {this.Id}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.NotExistingComponent, componentType, this.GetType().Name, this.Id));
             }
             components.Remove(component);
             return component;
         }
         public void AddPeripheral(IPeripheral peripheral)
         {
-            if (peripherals.Contains(peripheral))
+            if (peripherals.Exists(x => x.GetType().Name == peripheral.GetType().Name))
             {
-                throw new ArgumentException($"Peripheral {peripheral.GetType().Name} already exists in {this.GetType().Name} with Id {this.Id}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.ExistingPeripheral, peripheral.GetType().Name, this.GetType().Name, this.Id));
             }
             peripherals.Add(peripheral);
         }
@@ -110,7 +101,7 @@ namespace OnlineShop.Models.Products.Computers
             var peripheral = peripherals.Find(x => x.GetType().Name == peripheralType);
             if (peripheral == null)
             {
-                throw new ArgumentException($"Peripheral {peripheralType} does not exist in {this.GetType().Name} with Id {this.Id}.");
+                throw new ArgumentException(string.Format(ExceptionMessages.NotExistingPeripheral, peripheralType, this.GetType().Name, this.Id));
             }
             peripherals.Remove(peripheral);
             return peripheral;
