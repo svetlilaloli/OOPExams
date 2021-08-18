@@ -19,10 +19,7 @@ namespace Bakery.Models.Drinks.Entities
         }
         public string Name
         {
-            get
-            {
-                return name;
-            }
+            get => name;
             private set
             {
                 if (string.IsNullOrWhiteSpace(value))
@@ -35,10 +32,7 @@ namespace Bakery.Models.Drinks.Entities
 
         public int Portion
         {
-            get
-            {
-                return portion;
-            }
+            get => portion;
             private set
             {
                 if (value <= 0)
@@ -51,10 +45,7 @@ namespace Bakery.Models.Drinks.Entities
 
         public decimal Price
         {
-            get
-            {
-                return price;
-            }
+            get => price;
             private set
             {
                 if (value <= 0)
@@ -67,10 +58,7 @@ namespace Bakery.Models.Drinks.Entities
 
         public string Brand
         {
-            get
-            {
-                return brand;
-            }
+            get => brand;
             private set
             {
                 if (string.IsNullOrWhiteSpace(value))

@@ -21,14 +21,11 @@ namespace Bakery.Models.Tables.Entities
             foodOrders = new List<IBakedFood>();
             drinkOrders = new List<IDrink>();
         }
-        public int TableNumber { get; private set; }
+        public int TableNumber { get; }
 
         public int Capacity
         {
-            get
-            {
-                return capacity;
-            }
+            get => capacity;
             private set
             {
                 if (value < 0)
@@ -41,10 +38,7 @@ namespace Bakery.Models.Tables.Entities
 
         public int NumberOfPeople
         {
-            get
-            {
-                return numberOfPeople;
-            }
+            get => numberOfPeople;
             private set
             {
                 if (value <= 0)
@@ -59,7 +53,7 @@ namespace Bakery.Models.Tables.Entities
 
         public bool IsReserved { get; private set; }
 
-        public decimal Price => numberOfPeople * PricePerPerson;
+        public decimal Price => NumberOfPeople * PricePerPerson;
 
         public void Clear()
         {
@@ -71,7 +65,7 @@ namespace Bakery.Models.Tables.Entities
 
         public decimal GetBill()
         {
-            decimal result = PricePerPerson * NumberOfPeople;
+            decimal result = Price;
             foreach (var food in foodOrders)
             {
                 result += food.Price;

@@ -4,12 +4,12 @@ using System;
 
 namespace Bakery.Models.BakedFoods.Entities
 {
-    public abstract class Food : IBakedFood
+    public abstract class BakedFood : IBakedFood
     {
         private string name;
         private int portion;
         private decimal price;
-        public Food(string name, int portion, decimal price)
+        public BakedFood(string name, int portion, decimal price)
         {
             Name = name;
             Portion = portion;
@@ -17,10 +17,7 @@ namespace Bakery.Models.BakedFoods.Entities
         }
         public string Name
         {
-            get
-            {
-                return name;
-            }
+            get => name;
             private set
             {
                 if (string.IsNullOrWhiteSpace(value))
@@ -30,13 +27,9 @@ namespace Bakery.Models.BakedFoods.Entities
                 name = value;
             }
         }
-
         public int Portion
         {
-            get
-            {
-                return portion;
-            }
+            get => portion;
             private set
             {
                 if (value <= 0)
@@ -48,10 +41,7 @@ namespace Bakery.Models.BakedFoods.Entities
         }
         public decimal Price
         {
-            get
-            {
-                return price;
-            }
+            get => price;
             private set
             {
                 if (value <= 0)
@@ -61,7 +51,6 @@ namespace Bakery.Models.BakedFoods.Entities
                 price = value;
             }
         }
-
         public override string ToString()
         {
             var currentFood = this.GetType();
