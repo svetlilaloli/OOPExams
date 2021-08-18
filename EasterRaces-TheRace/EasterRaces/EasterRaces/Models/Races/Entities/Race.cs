@@ -1,5 +1,6 @@
 ﻿using EasterRaces.Models.Drivers.Contracts;
 using EasterRaces.Models.Races.Contracts;
+using EasterRaces.Utilities.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace EasterRaces.Models.Races.Entities
         private string name;
         private int laps;
         private readonly List<IDriver> drivers;
+        private const int MinNameLength = 5;
+        private const int MinLaps = 1;
         public Race(string name, int laps)
         {
             Name = name;
@@ -19,15 +22,12 @@ namespace EasterRaces.Models.Races.Entities
         }
         public string Name
         {
-            get
-            {
-                return name;
-            }
+            get => name;
             private set
             {
-                if (string.IsNullOrEmpty(value) || value.Length < 5)
+                if (string.IsNullOrEmpty(value) || value.Length < MinNameLength)
                 {
-                    throw new ArgumentException($"Name {value} cannot be less than 5 symbols.");
+                    throw new ArgumentException(string.Format(ExceptionMessages.InvalidName, value, MinNameLength));
                 }
                 name = value;
             }
@@ -35,35 +35,32 @@ namespace EasterRaces.Models.Races.Entities
 
         public int Laps
         {
-            get
-            {
-                return laps;
-            }
+            get => laps;
             private set
             {
-                if (value < 1)
+                if (value < MinLaps)
                 {
-                    throw new ArgumentException("Laps cannot be less than 1.");
+                    throw new ArgumentException(string.Format(ExceptionMessages.InvalidNumberOfLaps, MinLaps));
                 }
                 laps = value;
             }
         }
 
-        public IReadOnlyCollection<IDriver> Drivers => drivers;
+        public IReadOnlyCollection<IDriver> Drivers => drivers.AsReadOnly();
 
         public void AddDriver(IDriver driver)
         {
             if (driver == null)
             {
-                throw new ArgumentNullException("Driver cannot be null.");
+                throw new ArgumentNullException(ExceptionMessages.DriverInvalid);
             }
             if (!driver.CanParticipate)
             {
-                throw new ArgumentException($"Driver {driver.Name} could not participate in race.");
+                throw new ArgumentException(string.Format(ExceptionMessages.DriverNotParticipate, driver.Name));
             }
             if (drivers.Any(x => x.Name == driver.Name))
             {
-                throw new ArgumentNullException($"Driver {driver.Name} is already added in {Name} race.");
+                throw new ArgumentNullException(string.Format(ExceptionMessages.DriverAlreadyAdded, driver.Name, Name));
             }
             drivers.Add(driver);
         }
