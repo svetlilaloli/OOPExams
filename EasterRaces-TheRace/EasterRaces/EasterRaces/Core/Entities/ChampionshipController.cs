@@ -1,11 +1,12 @@
 ﻿using EasterRaces.Core.Contracts;
+using EasterRaces.Models.Cars.Contracts;
 using EasterRaces.Models.Cars.Entities;
 using EasterRaces.Models.Drivers.Entities;
 using EasterRaces.Models.Races.Entities;
 using EasterRaces.Repositories.Entities;
+using EasterRaces.Utilities.Messages;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Text;
 
 namespace EasterRaces.Core.Entities
@@ -15,6 +16,7 @@ namespace EasterRaces.Core.Entities
         private readonly CarRepository carRepository;
         private readonly DriverRepository driverRepository;
         private readonly RaceRepository raceRepository;
+        private const int MinRaceParticipants = 3;
         public ChampionshipController()
         {
             carRepository = new CarRepository();
@@ -28,14 +30,14 @@ namespace EasterRaces.Core.Entities
 
             if (driver == null)
             {
-                throw new InvalidOperationException($"Driver {driverName} could not be found.");
+                throw new InvalidOperationException(string.Format(ExceptionMessages.DriverNotFound, driverName));
             }
             if (car == null)
             {
-                throw new InvalidOperationException($"Car {carModel} could not be found.");
+                throw new InvalidOperationException(string.Format(ExceptionMessages.CarNotFound, carModel));
             }
             driver.AddCar(car);
-            return $"Driver {driver.Name} received car {car.Model}.";
+            return string.Format(OutputMessages.CarAdded, driver.Name, car.Model);
         }
 
         public string AddDriverToRace(string raceName, string driverName)
@@ -44,56 +46,55 @@ namespace EasterRaces.Core.Entities
             var driver = driverRepository.GetByName(driverName);
             if (race == null)
             {
-                throw new InvalidOperationException($"Race { raceName } could not be found.");
+                throw new InvalidOperationException(string.Format(ExceptionMessages.RaceNotFound, raceName));
             }
             if (driver == null)
             {
-                throw new InvalidOperationException($"Driver { driverName } could not be found.");
+                throw new InvalidOperationException(string.Format(ExceptionMessages.DriverNotFound, driverName));
             }
             race.AddDriver(driver);
-            return $"Driver {driverName} added in {raceName} race.";
+            return string.Format(OutputMessages.DriverAdded, driverName, raceName);
         }
 
         public string CreateCar(string type, string model, int horsePower)
         {
             if (carRepository.GetByName(model) != null)
             {
-                throw new ArgumentException($"Car {model} is already created.");
+                throw new ArgumentException(string.Format(ExceptionMessages.CarExists, model));
             }
+            ICar car;
             if (type == "Muscle")
             {
-                var car = new MuscleCar(model, horsePower);
-                carRepository.Add(car);
-                return $"MuscleCar {model} is created.";
+                car = new MuscleCar(model, horsePower);
             }
             else
             {
-                var car = new SportsCar(model, horsePower);
-                carRepository.Add(car);
-                return $"SportsCar {model} is created.";
+                car = new SportsCar(model, horsePower);
             }
+            carRepository.Add(car);
+            return string.Format(OutputMessages.CarCreated, car.GetType().Name, model);
         }
 
         public string CreateDriver(string driverName)
         {
             if (driverRepository.GetByName(driverName) != null)
             {
-                throw new ArgumentException($"Driver {driverName} is already created.");
+                throw new ArgumentException(string.Format(ExceptionMessages.DriversExists, driverName));
             }
             Driver driver = new Driver(driverName);
             driverRepository.Add(driver);
-            return $"Driver {driverName} is created.";
+            return string.Format(OutputMessages.DriverCreated, driverName);
         }
 
         public string CreateRace(string name, int laps)
         {
             if (raceRepository.GetByName(name) != null)
             {
-                throw new InvalidOperationException($"Race { name } is already create.");
+                throw new InvalidOperationException(string.Format(ExceptionMessages.RaceExists, name));
             }
             var race = new Race(name, laps);
             raceRepository.Add(race);
-            return $"Race {name} is created.";
+            return string.Format(OutputMessages.RaceCreated, name);
         }
 
         public string StartRace(string raceName)
@@ -103,11 +104,11 @@ namespace EasterRaces.Core.Entities
 
             if (race == null)
             {
-                throw new InvalidOperationException($"Race {raceName} could not be found.");
+                throw new InvalidOperationException(string.Format(ExceptionMessages.RaceNotFound, raceName));
             }
-            if (race.Drivers.Count < 3)
+            if (race.Drivers.Count < MinRaceParticipants)
             {
-                throw new InvalidOperationException($"Race {raceName} cannot start with less than 3 participants.");
+                throw new InvalidOperationException(string.Format(ExceptionMessages.RaceInvalid, raceName, MinRaceParticipants));
             }
             var sorted = race.Drivers.OrderByDescending(x => x.Car.CalculateRacePoints(race.Laps)).ToList();
 
