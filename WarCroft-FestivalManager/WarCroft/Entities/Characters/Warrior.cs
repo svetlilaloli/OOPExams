@@ -18,7 +18,7 @@ namespace WarCroft.Entities.Characters
         {   
             EnsureAlive();
             
-            if (this == character)
+            if (this.Name == character.Name)
             {
                 throw new InvalidOperationException(ExceptionMessages.CharacterAttacksSelf);
             }

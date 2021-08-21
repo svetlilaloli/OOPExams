@@ -27,17 +27,16 @@ namespace WarCroft.Core
             if (characterType == "Warrior")
             {
                 character = new Warrior(name);
-                characterParty.Add(character);
             }
             else if (characterType == "Priest")
             {
                 character = new Priest(name);
-                characterParty.Add(character);
             }
             else
             {
-                throw new ArgumentException(ExceptionMessages.InvalidCharacterType, characterType);
+                throw new ArgumentException(string.Format(ExceptionMessages.InvalidCharacterType, characterType));
             }
+            characterParty.Add(character);
             return string.Format(SuccessMessages.JoinParty, name);
         }
 
@@ -48,17 +47,16 @@ namespace WarCroft.Core
             if (itemName == "FirePotion")
             {
                 item = new FirePotion();
-                itemPool.Push(item);
             }
             else if (itemName == "HealthPotion")
             {
                 item = new HealthPotion();
-                itemPool.Push(item);
             }
             else
             {
-                throw new ArgumentException(ExceptionMessages.InvalidItem, itemName);
+                throw new ArgumentException(string.Format(ExceptionMessages.InvalidItem, itemName));
             }
+            itemPool.Push(item);
             return string.Format(SuccessMessages.AddItemToPool, itemName);
         }
 
@@ -68,7 +66,7 @@ namespace WarCroft.Core
             var character = characterParty.Find(x => x.Name == characterName);
             if (character == null)
             {
-                throw new ArgumentException(ExceptionMessages.CharacterNotInParty, characterName);
+                throw new ArgumentException(string.Format(ExceptionMessages.CharacterNotInParty, characterName));
             }
             if (itemPool.Count == 0)
             {
@@ -87,16 +85,16 @@ namespace WarCroft.Core
             var character = characterParty.Find(x => x.Name == characterName);
             if (character == null)
             {
-                throw new ArgumentException(ExceptionMessages.CharacterNotInParty, characterName);
+                throw new ArgumentException(string.Format(ExceptionMessages.CharacterNotInParty, characterName));
             }
             character.UseItem(character.Bag.GetItem(itemName));
             return string.Format(SuccessMessages.UsedItem, characterName, itemName);
         }
-
+        
         public string GetStats()
         {
             StringBuilder result = new StringBuilder();
-            foreach (var ch in characterParty.OrderByDescending(x => x.IsAlive).ThenByDescending(x => x.Health))
+            foreach (var ch in characterParty.OrderByDescending(x => x.Health))
             {
                 result.AppendLine(string.Format(SuccessMessages.CharacterStats, ch.Name, ch.Health, ch.BaseHealth, ch.Armor, ch.BaseArmor, ch.IsAlive? "Alive" : "Dead"));
             }
@@ -109,14 +107,13 @@ namespace WarCroft.Core
             string receiverName = args[1];
 
             var attacker = characterParty.Find(x => x.Name == attackerName);
-            var receiver = characterParty.Find(x => x.Name == receiverName);
-
             EnsureNotNull(attacker, attackerName);
+            var receiver = characterParty.Find(x => x.Name == receiverName);
             EnsureNotNull(receiver, receiverName);
 
             if (attacker is Priest)
             {
-                throw new ArgumentException(ExceptionMessages.AttackFail, attacker.Name);
+                throw new ArgumentException(string.Format(ExceptionMessages.AttackFail, attacker.Name));
             }
 
             var warrior = (Warrior)attacker;
@@ -135,29 +132,28 @@ namespace WarCroft.Core
         public string Heal(string[] args)
         {
             string healerName = args[0];
-            string healingReceiverName = args[1];
+            string receiverName = args[1];
 
             var healer = characterParty.Find(x => x.Name == healerName);
-            var healingReceiver = characterParty.Find(x => x.Name == healingReceiverName);
-
             EnsureNotNull(healer, healerName);
-            EnsureNotNull(healingReceiver, healingReceiverName);
+            var receiver = characterParty.Find(x => x.Name == receiverName);
+            EnsureNotNull(receiver, receiverName);
 
             if (healer is Warrior)
             {
-                throw new ArgumentException(ExceptionMessages.HealerCannotHeal, healer.Name);
+                throw new ArgumentException(string.Format(ExceptionMessages.HealerCannotHeal, healer.Name));
             }
 
             var priest = (Priest)healer;
-            priest.Heal(healingReceiver);
+            priest.Heal(receiver);
             
-            return string.Format(SuccessMessages.HealCharacter, healer.Name, healingReceiver.Name, healer.AbilityPoints, healingReceiver.Name, healingReceiver.Health);
+            return string.Format(SuccessMessages.HealCharacter, healer.Name, receiver.Name, healer.AbilityPoints, receiver.Name, receiver.Health);
         }
         private void EnsureNotNull(Character character, string name)
         {
             if (character == null)
             {
-                throw new ArgumentException(ExceptionMessages.CharacterNotInParty, name);
+                throw new ArgumentException(string.Format(ExceptionMessages.CharacterNotInParty, name));
             }
         }
     }

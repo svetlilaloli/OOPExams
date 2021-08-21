@@ -18,7 +18,7 @@ namespace WarCroft.Entities.Inventory
 
         public int Load => items.Sum(x => x.Weight);
 
-        public IReadOnlyCollection<Item> Items => items;
+        public IReadOnlyCollection<Item> Items => items.AsReadOnly();
 
         public void AddItem(Item item)
         {

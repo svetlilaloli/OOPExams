@@ -10,7 +10,7 @@ namespace WarCroft.Entities.Characters.Contracts
         private string name;
         private double health;
         private double armor;
-        public Character(string name, double health, double armor, double abilityPoints, Bag bag)
+        protected Character(string name, double health, double armor, double abilityPoints, Bag bag)
         {
             Name = name;
             BaseHealth = health;
@@ -58,7 +58,7 @@ namespace WarCroft.Entities.Characters.Contracts
             get => armor;
             private set
             {
-                if (value >= 0)
+                if (value > 0)
                 {
                     armor = value;
                 }
@@ -70,7 +70,7 @@ namespace WarCroft.Entities.Characters.Contracts
         }
         public double AbilityPoints { get; }
         public bool IsAlive => Health > 0;
-        public Bag Bag { get; private set; }
+        public Bag Bag { get; }
         protected void EnsureAlive()
         {
             if (!this.IsAlive)
