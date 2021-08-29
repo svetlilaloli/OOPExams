@@ -22,16 +22,14 @@
             {
                 return string.Format(OutputMessages.OneRacerIsNotAvailable, racerOne.Username, racerTwo.Username);
             }
-            racerOne.Car.Drive();
             racerOne.Race();
-            racerTwo.Car.Drive();
             racerTwo.Race();
 
             double racerOneChanceOfWinning = ChanceOfWinning(racerOne);
             double racerTwoChanceOfWinning = ChanceOfWinning(racerTwo);
-            //TO CHECK OUTPUT AND CALCULATION
-            return string.Format(OutputMessages.RacerWinsRace, racerOne, racerTwo,
-                racerOneChanceOfWinning > racerTwoChanceOfWinning ? racerOne : racerTwo);
+
+            return string.Format(OutputMessages.RacerWinsRace, racerOne.Username, racerTwo.Username,
+                racerOneChanceOfWinning > racerTwoChanceOfWinning ? racerOne.Username : racerTwo.Username);
         }
         private static double ChanceOfWinning(IRacer racer)
         {

@@ -72,7 +72,6 @@
 
         public bool IsAvailable()
         {
-            // TO CHECK
             if (Car.FuelAvailable >= car.FuelConsumptionPerRace)
             {
                 return true;

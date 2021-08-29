@@ -105,7 +105,6 @@
             FuelAvailable -= FuelConsumptionPerRace;
             if (this.GetType().Name == TunedCar)
             {
-                // TO CHECK THE CALCULATION
                 HorsePower -= (int)Math.Round(HorsePower * EngineWearPercent / 100);
             }
         }
