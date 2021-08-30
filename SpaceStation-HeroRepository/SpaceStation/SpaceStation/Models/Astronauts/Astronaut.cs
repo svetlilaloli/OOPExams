@@ -1,4 +1,5 @@
 ﻿using SpaceStation.Models.Astronauts.Contracts;
+using SpaceStation.Models.Bags;
 using SpaceStation.Models.Bags.Contracts;
 using SpaceStation.Utilities.Messages;
 using System;
@@ -13,6 +14,7 @@ namespace SpaceStation.Models.Astronauts
         {
             Name = name;
             Oxygen = oxygen;
+            Bag = new Backpack();
         }
         public string Name
         {
@@ -39,7 +41,6 @@ namespace SpaceStation.Models.Astronauts
                 oxygen = value;
             }
         }
-        // TO CHECK
         public bool CanBreath => oxygen > 0;
 
         public IBag Bag { get; }
@@ -47,7 +48,6 @@ namespace SpaceStation.Models.Astronauts
         public virtual void Breath()
         {
             Oxygen -= 10;
-            // TO CHECK
         }
     }
 }
