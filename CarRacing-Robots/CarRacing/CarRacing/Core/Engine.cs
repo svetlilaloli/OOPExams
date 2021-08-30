@@ -1,5 +1,5 @@
-﻿// ReSharper disable InconsistentNaming
-// ReSharper disable FunctionNeverReturns
+﻿//ReSharper disable InconsistentNaming
+//ReSharper disable FunctionNeverReturns
 namespace CarRacing.Core
 {
     using System;

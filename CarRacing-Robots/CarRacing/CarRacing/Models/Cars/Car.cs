@@ -1,4 +1,4 @@
-﻿namespace CarRacing.Models.Cars.Entities
+﻿namespace CarRacing.Models.Cars
 {
     using CarRacing.Models.Cars.Contracts;
     using CarRacing.Utilities.Messages;

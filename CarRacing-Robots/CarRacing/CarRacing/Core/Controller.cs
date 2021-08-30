@@ -1,13 +1,13 @@
 ﻿namespace CarRacing.Core
 {
     using CarRacing.Core.Contracts;
+    using CarRacing.Models.Cars;
     using CarRacing.Models.Cars.Contracts;
-    using CarRacing.Models.Cars.Entities;
     using CarRacing.Models.Maps.Contracts;
-    using CarRacing.Models.Maps.Entities;
+    using CarRacing.Models.Maps;
     using CarRacing.Models.Racers.Contracts;
-    using CarRacing.Models.Racers.Entities;
-    using CarRacing.Repositories.Entities;
+    using CarRacing.Models.Racers;
+    using CarRacing.Repositories;
     using CarRacing.Utilities.Messages;
     using System;
     using System.Linq;
