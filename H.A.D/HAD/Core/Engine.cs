@@ -20,7 +20,7 @@ namespace HAD.Core
 
         public void Run()
         {
-            while (this.isRunning)
+            while (!this.isRunning)
             {
                 string line = this.reader.ReadLine();
                 List<string> arguments = line.Split().ToList();

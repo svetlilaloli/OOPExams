@@ -16,12 +16,13 @@ namespace HAD.IO
 
         public void WriteLine(string text)
         {
-            File.AppendAllText(text, "");
+            sb.AppendLine(text);
+            //Console.WriteLine(text);
         }
 
         public void Flush()
         {
-            Console.WriteLine(sb.ToString().Trim());
+            Console.Write(sb.ToString().Trim());
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using HAD.Contracts;
+﻿using HAD.Contracts;
 using HAD.Core.Factory.Contracts;
 using HAD.Entities.Heroes;
 
@@ -16,13 +13,13 @@ namespace HAD.Core.Factory
             switch (heroType)
             {
                 case "Assassin":
-                    hero = new Barbarian(name);
+                    hero = new Assassin(name);
                     break;
                 case "Barbarian":
                     hero = new Barbarian(name);
                     break;
                 case "Wizard":
-                    hero = new Barbarian(name);
+                    hero = new Wizard(name);
                     break;
             }
 

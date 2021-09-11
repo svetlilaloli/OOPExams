@@ -1,33 +1,23 @@
-﻿using System.Text;
+﻿using HAD.Contracts;
+using System.Text;
 
 namespace HAD.Entities.Items
 {
-    public class CommonItem : BaseItem
+    public class CommonItem : BaseItem, IItem
     {
-        public CommonItem(
-            string name,
-            long strengthBonus,
-            long agilityBonus,
-            long intelligenceBonus,
-            long hitPointsBonus,
-            long damageBonus)
-            : base(
-                name,
-                strengthBonus,
-                agilityBonus,
-                intelligenceBonus,
-                hitPointsBonus,
-                damageBonus)
-        { }
+        public CommonItem(string name, long strengthBonus, long agilityBonus, long intelligenceBonus, long hitPointsBonus, long damageBonus)
+            : base(name, strengthBonus, agilityBonus, intelligenceBonus, hitPointsBonus, damageBonus)
+        { 
+        }
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder result = new StringBuilder();
 
-            sb.AppendLine($"###Item: {this.Name}");
-            sb.AppendLine(base.ToString());
+            result.AppendLine($"###Item: {Name}");
+            result.AppendLine(base.ToString());
 
-            return sb.ToString();
+            return result.ToString();
         }
     }
 }

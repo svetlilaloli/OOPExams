@@ -5,19 +5,14 @@ namespace HAD.Entities.Items
 {
     public abstract class BaseItem : IItem
     {
-        protected BaseItem(
-            string name,
-            long strengthBonus,
-            long agilityBonus,
-            long intelligenceBonus,
-            long hitPointsBonus,
-            long damageBonus)
+        protected BaseItem(string name, long strengthBonus, long agilityBonus, long intelligenceBonus, long hitPointsBonus, long damageBonus)
         {
-            this.Name = name;
-            this.StrengthBonus = strengthBonus;
-            this.AgilityBonus = agilityBonus;
-            this.IntelligenceBonus = intelligenceBonus;
-            this.HitPointsBonus = hitPointsBonus;
+            Name = name;
+            StrengthBonus = strengthBonus;
+            AgilityBonus = agilityBonus;
+            IntelligenceBonus = intelligenceBonus;
+            HitPointsBonus = hitPointsBonus;
+            DamageBonus = damageBonus;
         }
 
         public string Name { get; private set; }
@@ -36,11 +31,11 @@ namespace HAD.Entities.Items
         {
             StringBuilder result = new StringBuilder();
 
-            result.AppendLine($"###+{this.StrengthBonus} Strength");
-            result.AppendLine($"###+{this.AgilityBonus} Agility");
-            result.AppendLine($"###+{this.IntelligenceBonus} Intelligence");
-            result.AppendLine($"###+{this.HitPointsBonus} HitPoints");
-            result.Append($"###+{this.DamageBonus} Damage");
+            result.AppendLine($"###+{StrengthBonus} Strength");
+            result.AppendLine($"###+{AgilityBonus} Agility");
+            result.AppendLine($"###+{IntelligenceBonus} Intelligence");
+            result.AppendLine($"###+{HitPointsBonus} HitPoints");
+            result.Append($"###+{DamageBonus} Damage");
 
             return result.ToString();
         }

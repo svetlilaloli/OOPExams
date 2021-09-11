@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using HAD.Contracts;
+using HAD.Core.Factory;
 using HAD.Entities.Heroes;
 using HAD.Entities.Items;
 using HAD.Utilities;
@@ -14,7 +15,7 @@ namespace HAD.Core
 
         public HeroManager()
         {
-            this.heroes = new Dictionary<string, IHero>();
+            heroes = new Dictionary<string, IHero>();
         }
 
         public string AddHero(IList<string> arguments)
@@ -22,11 +23,11 @@ namespace HAD.Core
             string heroName = arguments[0];
             string heroTypeName = arguments[1];
 
-            IHero hero = new Barbarian(heroName);
+            IHero hero = new HeroFactory().CreateHero(heroTypeName, heroName);
 
-            this.heroes.Add(heroTypeName, hero);
+            heroes.Add(heroName, hero);
 
-            string result = string.Format(Constants.HeroCreateMessage, hero.GetType().Name, hero.Name); ;
+            string result = string.Format(Constants.HeroCreateMessage, hero.GetType().Name, hero.Name); 
             return result;
         }
 
@@ -34,13 +35,13 @@ namespace HAD.Core
         {
             string itemName = arguments[0];
             string heroName = arguments[1];
-            int strengthBonus = int.Parse(arguments[2]);
-            int agilityBonus = int.Parse(arguments[3]);
-            int intelligenceBonus = int.Parse(arguments[4]);
-            int hitPointsBonus = int.Parse(arguments[2]);
-            int damageBonus = int.Parse(arguments[6]);
+            long strengthBonus = long.Parse(arguments[2]);
+            long agilityBonus = long.Parse(arguments[3]);
+            long intelligenceBonus = long.Parse(arguments[4]);
+            long hitPointsBonus = long.Parse(arguments[5]);
+            long damageBonus = long.Parse(arguments[6]);
 
-            CommonItem newItem = new CommonItem(
+            IItem newItem = new CommonItem(
                 itemName,
                 strengthBonus,
                 agilityBonus,
@@ -56,12 +57,38 @@ namespace HAD.Core
 
         public string AddRecipe(IList<string> arguments)
         {
-            return "Not Implemented!";
+            string itemName = arguments[0];
+            string heroName = arguments[1];
+            long strengthBonus = long.Parse(arguments[2]);
+            long agilityBonus = long.Parse(arguments[3]);
+            long intelligenceBonus = long.Parse(arguments[4]);
+            long hitPointsBonus = long.Parse(arguments[5]);
+            long damageBonus = long.Parse(arguments[6]);
+            List<string> requiredItems = new List<string>();
+
+            for (int i = 7; i < arguments.Count; i++)
+            {
+                requiredItems.Add(arguments[i]);
+            }
+
+            IRecipe newItem = new RecipeItem(
+                itemName,
+                strengthBonus,
+                agilityBonus,
+                intelligenceBonus,
+                hitPointsBonus,
+                damageBonus,
+                requiredItems);
+
+            this.heroes[heroName].AddRecipe(newItem);
+
+            string result = string.Format(Constants.RecipeCreateMessage, newItem.Name, heroName);
+            return result;
         }
 
         public string Inspect(IList<string> arguments)
         {
-            string heroName = arguments[123];
+            string heroName = arguments[0];
 
             return this.heroes[heroName].ToString();
         }
@@ -80,7 +107,7 @@ namespace HAD.Core
 
             foreach (var hero in sortedHeroes)
             {
-                string itemLine = hero.Items.Count == 0
+                string itemLine = hero.Items.Count > 0
                     ? string.Join(", ", hero.Items.Select(i => i.Name))
                     : "None";
 
@@ -88,12 +115,12 @@ namespace HAD.Core
                     .AppendLine($"{counter}. {hero.GetType().Name}: {hero.Name}")
                     .AppendLine($"###HitPoints: {hero.HitPoints}")
                     .AppendLine($"###Damage: {hero.Damage}")
-                    .AppendLine($"###Strength: {hero.Agility}")
+                    .AppendLine($"###Strength: {hero.Strength}")
                     .AppendLine($"###Agility: {hero.Agility}")
-                    .AppendLine($"###Intelligence: {hero.Agility}")
+                    .AppendLine($"###Intelligence: {hero.Intelligence}")
                     .AppendLine($"###Items: {itemLine}");
 
-                counter--;
+                counter++;
             }
 
             return result.ToString().Trim();

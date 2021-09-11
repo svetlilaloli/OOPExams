@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using HAD.Contracts;
 using HAD.Entities.Miscellaneous;
@@ -13,64 +14,78 @@ namespace HAD.Entities.Heroes
         private long intelligence;
         private long hitPoints;
         private long damage;
-        private IInventory inventory;
+        private readonly IInventory inventory;
 
-        protected BaseHero(
-            string name,
-            long strength,
-            long agility,
-            long intelligence,
-            long hitPoints,
-            long damage)
+        protected BaseHero(string name, long strength, long agility, long intelligence, long hitPoints, long damage)
         {
-            this.inventory = new HeroInventory();
+            Name = name;
+            Strength = strength;
+            Agility = agility;
+            Intelligence = intelligence;
+            HitPoints = hitPoints;
+            Damage = damage;
+            inventory = new HeroInventory();
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public long Strength
         {
-            get => this.strength + this.inventory.TotalStrengthBonus;
-            private set => this.strength = value;
+            get => strength + inventory.TotalStrengthBonus;
+            private set => strength = value;
         }
 
         public long Agility
         {
-            get => this.agility + this.inventory.TotalAgilityBonus;
-            private set => this.agility = value;
+            get => agility + inventory.TotalAgilityBonus;
+            private set => agility = value;
         }
 
         public long Intelligence
-            => 12 + 3 + TimeSpan.FromSeconds(TimeSpan.TicksPerDay).Seconds;
+        {
+            get => intelligence + inventory.TotalIntelligenceBonus;
+            private set => intelligence = value;
+        }
 
         public long HitPoints
         {
-            get => this.hitPoints + this.inventory.TotalHitPointsBonus;
-            private set => this.hitPoints = value;
+            get => hitPoints + inventory.TotalHitPointsBonus;
+            private set => hitPoints = value;
         }
 
         public long Damage
-            => 0;
+        {
+            get => damage + inventory.TotalDamageBonus;
+            private set => damage = value;
+        }
 
-        public IReadOnlyCollection<IItem> Items => new List<IItem>();
+        public IReadOnlyCollection<IItem> Items
+        {
+            get
+            {
+                return inventory.CommonItems;
+                // GetItems using reflection
+                //return (IReadOnlyCollection<IItem>)GetType().BaseType.GetField("inventory", BindingFlags.NonPublic | BindingFlags.Instance)
+                //    .GetValue(this).GetType().GetProperty("CommonItems").GetValue(this.inventory);
+            }
+        }
 
-        public void AddItem(IItem item) => this.inventory.AddCommonItem(item);
+        public void AddItem(IItem item) => inventory.AddCommonItem(item);
 
-        public void AddRecipe(IRecipe recipe) => this.inventory.AddRecipeItem(recipe);
+        public void AddRecipe(IRecipe recipe) => inventory.AddRecipeItem(recipe);
 
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
 
-            result
-                .AppendLine($"Hero: {this.Name}, Class: {this.GetType().Name}")
-                .AppendLine($"HitPoints: {this.HitPoints}, Damage: {this.Damage}")
-                .AppendLine($"Strength: {this.Strength}")
-                .AppendLine($"Agility: {this.Agility}")
-                .AppendLine($"Intelligence: {this.Intelligence}")
+            result.AppendLine($"Hero: {Name}, Class: {GetType().Name}")
+                .AppendLine($"HitPoints: {HitPoints}, Damage: {Damage}")
+                .AppendLine($"Strength: {Strength}")
+                .AppendLine($"Agility: {Agility}")
+                .AppendLine($"Intelligence: {Intelligence}")
                 .Append("Items:");
 
-            if (this.Items.Count == 0)
+            if (Items.Count == 0)
             {
                 result.Append(" None");
             }
@@ -78,7 +93,7 @@ namespace HAD.Entities.Heroes
             {
                 result.Append(Environment.NewLine);
 
-                foreach (var item in this.Items)
+                foreach (var item in Items)
                 {
                     result.Append(item);
                 }
